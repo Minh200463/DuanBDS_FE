@@ -1,0 +1,405 @@
+<div class="container">
+    <div class="filter">
+        <nav class="nav d-flex justify-content-between justify-content-center">
+            <h5>LIST ROOM</h5>
+            <a class="nav-link tab-back rounded-2"
+                style="box-shadow: 0 0 2px 2px rgba(174, 185, 209, 0.668);"
+                (click)="goBack()" href="#">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </nav>
+      
+
+        <div class="d-flex mt-2">
+            <div class="d-flex flex-row mb-3 col-8">
+                <div class="p-2">
+                    <div class="filter-section position-relative">
+                        <button class="btn btn-outline-dark btn-sm" (click)="toggleFilterForm()">Filter <svg
+                                xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-filter">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z" />
+                            </svg></button>
+                        <button (click)="getFilteredRooms()" class="btn btn-sm"><svg xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-refresh">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                                <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                            </svg></button>
+                        <div [ngClass]="{'d-none': !showFilterForm}" class="filter-form mt-2 position-absolute"
+                            style="width: 750px; background-color: rgba(69, 69, 79, 0.937); border-radius: 10px;">
+                            <form class="p-3">
+                                <div class="row mb-2">
+                                    <!-- Trạng thái Order -->
+                                    <div class="col-md-4 d-flex">
+                                        <label for="statusOrder" class="form-label text-white">Status Room</label>
+                                    </div>
+                                    <div class="col-md-8 d-flex">
+                                        <select name="rented" class="form-select form-select-sm" id="rented"
+                                            [(ngModel)]="filterData.rented">
+                                            <option value="">All</option>
+                                            <option value="0">Available</option>
+                                            <option value="1">Rented</option>
+                                        </select>
+                                    </div>
+                                    <!-- Mã đơn -->
+
+
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="orderId" class="form-label text-white">Search within price
+                                            range</label>
+                                    </div>
+                                    <div class="col-md-8 d-flex">
+                                        <input type="text" name="minPrice" id="orderId"
+                                            [(ngModel)]="filterData.minPrice" class="form-control form-control-sm mx-2"
+                                            placeholder="From">
+                                        <input type="text" name="maxPrice" id="orderId"
+                                            [(ngModel)]="filterData.maxPrice" class="form-control form-control-sm"
+                                            placeholder="To">
+                                    </div>
+
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-sm me-1" (click)="applyFilters()"
+                                        style="background-color: aliceblue; color: black;"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-zoom">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                                            <path d="M21 21l-6 -6" />
+                                        </svg> Lọc</button>
+                                    <button type="button" class="btn btn-sm" (click)="resetDataFilter()"
+                                        style="background-color: aliceblue; color: black;">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="p-2">
+                    <a type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalRoom"
+                        (click)="openCreateRoomModal()"><i class="bi bi-plus-lg"></i> Create new</a>
+                </div>
+                <div class="p-2">
+
+                </div>
+            </div>
+            <div class="action-box col-4">
+
+                <form class="d-flex" role="search">
+                    <input class="form-control form-control-sm me-2" type="search" name="roomNumber"
+                        placeholder="Search room number..." [(ngModel)]="filterData.roomNumber" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit" (click)="searchRoomNumber()"><i
+                            class="bi bi-search"></i></button>
+                </form>
+            </div>
+
+        </div>
+        <div class="row mb-3" style="font-size: 0.9em;">
+            <div class="col-10"></div>
+            <div class="col-2 d-flex ">
+                <span class="me-1">Sort by price</span>
+                <a type="button" class="mx-1" (click)="sortByPrice('asc', 'pricePerDay')"
+                    [ngClass]="{'text-danger': selectedSort === 'asc'}">
+                    <i class="bi bi-arrow-up"></i>
+                </a>
+
+                <a type="button" (click)="sortByPrice('desc', 'pricePerDay')"
+                    [ngClass]="{'text-danger': selectedSort === 'desc'}">
+                    <i class="bi bi-arrow-down"></i>
+                </a>
+
+
+            </div>
+        </div>
+
+
+    </div>
+    <section *ngIf="listRooms.length <=0" class="box-noitem d-flex justify-content-center align-items-center"
+        style="height: 400px;">
+        <i>No values found!</i>
+    </section>
+    <section class=" vh-100 w-100 " *ngIf="listRooms.length > 0">
+        <table class="table " style="font-size: 0.9em;">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center align-middle">Picture</th>
+                    <th scope="col" class="">Infomation</th>
+                    <th scope="col" class="text-center align-middle">Price per Day / Month</th>
+                    <th scope="col" class="text-center align-middle">Status</th>
+                    <th scope="col" class="text-center align-middle">Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider align-middle text-center">
+                <tr *ngFor="let item of listRooms">
+                    <td scope="row">
+                        <ng-container *ngIf="item.images.length > 0; else noImage">
+                            <img [src]="item.images[0]?.url" alt="Room Image"
+                                style="max-width: 120px; height: 90px; object-fit: cover; border-radius: 7px;">
+                        </ng-container>
+                        <ng-template #noImage>
+                            <img src="http://res.cloudinary.com/dltbqnpfg/image/upload/v1739865621/lygonff7qdj507bbnzuc.png"
+                                alt="No Image Available" width="120px" height="100px">
+                        </ng-template>
+                    </td>
+
+                    <td style="width: 400px; text-align: left;">
+                        <span><span class="text-success fw-bold">{{item.roomNumber}}</span> |
+                            ({{item.building.houseType}})</span>
+                        <p>Height: {{item.length}} | Width: {{item.width}} | Max people: {{item.maxPeople}}</p>
+
+                    </td>
+                    <td>
+                        <p class="text-warning m-1 fw-bold"><i class="bi bi-currency-dollar"></i>{{item.pricePerDay}} /
+                            day</p>
+                        <p class="text-danger fw-bold"><i class="bi bi-currency-dollar"></i>{{item.pricePerMonth}} /
+                            month</p>
+                    </td>
+                    <td>
+                        <span [ngSwitch]="item.isRented">
+                            <p *ngSwitchCase="true">
+                                <span class="px-3 py-1 bg-success text-white" style="border-radius: 10px;">Rented</span>
+                            </p>
+                            <p *ngSwitchDefault>
+                                <span class="px-3 py-1 bg-primary text-white"
+                                    style="border-radius: 10px;">Available</span>
+                            </p>
+                        </span>
+                    </td>
+                    <td><a type="button" data-bs-toggle="modal" data-bs-target="#modalRoom"
+                            (click)="openEditRoomModal(item.id)">
+                            <i class="bi bi-eye text-primary"></i>
+                        </a></td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+    <div class="d-flex justify-content-center align-content-center mb-4">
+        <nav aria-label="Page navigation example" *ngIf="totalPages > 1" >
+            <ul class="pagination justify-content-center pt-0 m-0">
+                <li class="page-item" [class.disabled]="currentPage === 0">
+                    <a class="page-link" (click)="changePage(currentPage - 1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li *ngFor="let page of pages" class="page-item" [class.active]="currentPage === page">
+                    <a class="page-link" (click)="changePage(page)">{{ page + 1 }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                    <a class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Modal Create/update  -->
+    <div class="modal fade " id="modalRoom" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1"
+        #modalRoom>
+        <div class="modal-dialog modal-xl modal-dialog-centered ">
+            <div class="modal-content">
+                <div class="modal-body ">
+                    <div class="container">
+                        <h3 class="mb-4">{{ isEditing ? 'Update Room' : 'Create new room' }}</h3>
+                        <form class="row g-3 needs-validation" novalidate>
+                            <div class="row">
+                                <!-- Phòng số -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="roomNumber">Room Number *</label>
+                                    <input type="text" class="form-control-sm form-control" placeholder="Ex: P222"
+                                        id="validationroomNumber" [(ngModel)]="roomRequest.roomNumber" name="roomNumber"
+                                        required>
+                                    <div *ngIf="errorService.errors$ | async as errors">
+                                        <span *ngIf="errors.roomNumber" class="text-danger" style="font-size: 0.7em;">{{
+                                            errors.roomNumber }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Nhà -->
+                                <div class="col-md-6">
+                                    <label class="form-label">House *</label>
+                                    <select class="form-select-sm form-control" name="building"
+                                        [(ngModel)]="roomRequest.buildingId" required (change)="onSelectChange($event)">
+                                        <option value="0">Chọn loại nhà</option>
+                                        <option *ngFor="let item of listHouse" [value]="item.id">{{ item.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <!-- Dài -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Length</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control-sm form-control" name="length" required
+                                            [(ngModel)]="roomRequest.length">
+                                        <span class="input-group-text">m</span>
+                                    </div>
+                                    <div *ngIf="errorService.errors$ | async as errors">
+                                        <span *ngIf="errors.length" class="text-danger" style="font-size: 0.7em;">{{
+                                            errors.length }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Rộng -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Width</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control-sm form-control" name="width" required
+                                            [(ngModel)]="roomRequest.width">
+                                        <span class="input-group-text">m</span>
+                                    </div>
+                                    <div *ngIf="errorService.errors$ | async as errors">
+                                        <span *ngIf="errors.width" class="text-danger" style="font-size: 0.7em;">{{
+                                            errors.width }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Số lượng người tối đa -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Maximum number of people *</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control-sm form-control" name="maxPeople"
+                                            required [(ngModel)]="roomRequest.maxPeople">
+                                        <span class="input-group-text"><i class="bi bi-people-fill"></i></span>
+                                    </div>
+                                    <div *ngIf="errorService.errors$ | async as errors">
+                                        <span *ngIf="errors.maxPeople" class="text-danger" style="font-size: 0.7em;">{{
+                                            errors.maxPeople }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mt-3">
+                                    <label class="form-label">Price per day *</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control-sm form-control" name="pricePerDay"
+                                            required [(ngModel)]="roomRequest.pricePerDay">
+                                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+
+                                    </div>
+                                    <div *ngIf="errorService.errors$ | async as errors">
+                                        <span *ngIf="errors.pricePerDay" class="text-danger"
+                                            style="font-size: 0.7em;">{{ errors.pricePerDay }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mt-3">
+                                    <label class="form-label">Price per month *</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control-sm form-control" name="pricePerMonth"
+                                            required [(ngModel)]="roomRequest.pricePerMonth">
+                                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                    </div>
+                                    <div *ngIf="errorService.errors$ | async as errors">
+                                        <span *ngIf="errors.pricePerMonth" class="text-danger"
+                                            style="font-size: 0.7em;">{{ errors.pricePerMonth }}</span>
+                                    </div>
+                                </div>
+
+
+
+                                <!-- Mô tả thêm -->
+                                <div class="col-12 mt-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" name="description" rows="3"
+                                        [(ngModel)]="roomRequest.description"></textarea>
+                                </div>
+
+                                <!-- Trống/đang thuê -->
+                                <div class="col-12 mt-3 mb-0">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" name="rented" type="checkbox"
+                                            [(ngModel)]="roomRequest.rented" id="flexSwitchCheckChecked" checked>
+                                        <label class="form-label">Rented</label>
+                                    </div>
+                                </div>
+
+                                <!-- Hình ảnh -->
+                                <!-- Hình ảnh -->
+                                <div class="col-12 mt-0">
+                                    <div class="container p-4 shadow-lg rounded bg-light">
+                                        <span style="font-size: 0.8em;" class="text-danger">Multiple images can be
+                                            selected!</span>
+
+                                        <!-- Input chọn ảnh -->
+                                        <div class="mb-3 mt-3">
+                                            <input type="file" multiple (change)="onFileSelected($event)"
+                                                class="form-control form-control-sm border-primary" accept="image/*" />
+                                        </div>
+
+                                        <!-- Hiển thị ảnh -->
+                                        <div class="row g-3">
+                                            <div class="col-md-3" *ngFor="let img of imagePreviews; let i = index">
+                                                <div class="position-relative border rounded shadow-sm p-2 bg-white">
+                                                    <img [src]="img" class="img-thumbnail w-100 rounded "
+                                                        style="height: 150px ;  object-fit: cover;" />
+                                                    <button
+                                                        class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                                                        (click)="removeImage(i)">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                                <p class="text-danger mt-3">(*): Required information</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger btn-sm text-white" *ngIf="isEditing" (click)="openConfirmModal()">
+                        <i class="bi bi-trash3"></i> Delete
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm" (click)="saveRoom()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal xác nhận xóa -->
+    <div *ngIf="isOpenConfirmModal" class="modal fade show d-block" style="background: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="http://res.cloudinary.com/dltbqnpfg/image/upload/v1739907447/j5zluvfjhzrcnspsddbr.png"
+                        width="120px" alt="">
+                    <h5 class="fw-bold">Confirm room deletion</h5>
+                    <p>Are you sure you want to delete this room?</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-secondary" (click)="closeConfirmModal()">Hủy</button>
+                    <button type="button" class="btn btn-danger" (click)="deleteRoom(itemRoom!.id)">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

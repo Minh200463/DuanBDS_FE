@@ -7,11 +7,15 @@ import { delay, filter, map, tap } from 'rxjs/operators';
 import { ColorModeService } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from './icons/icon-subset';
+import { HttpClientModule } from '@angular/common/http';
+import { NgxDropzoneModule } from 'ngx-dropzone';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-root',
     template: '<router-outlet />',
-    imports: [RouterOutlet]
+    imports: [RouterOutlet, HttpClientModule, NgxDropzoneModule, FormsModule,  MatSnackBarModule]
 })
 export class AppComponent implements OnInit {
   title = 'CoreUI Angular Admin Template';

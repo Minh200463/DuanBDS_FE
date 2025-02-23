@@ -19,6 +19,14 @@ export const routes: Routes = [
         loadChildren: () => import('./views/dashboard/routes').then((m) => m.routes)
       },
       {
+        path: 'managerHouse/listrooms/:id',
+        loadChildren: () => import('./views/list-rooms/routes').then((m) => m.routes)
+      },
+      {
+        path: 'managerHouse',
+        loadChildren: () => import('./views/quanlynhathue/routes').then((m) => m.routes)
+      },
+      {
         path: 'theme',
         loadChildren: () => import('./views/theme/routes').then((m) => m.routes)
       },
